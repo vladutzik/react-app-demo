@@ -7,13 +7,11 @@ import { User } from '../../types/user';
 import PostsCardView from '../posts/cardsView';
 
 const Posts = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [user, setUser] = useState<User>({});
+  const [user, setUser] = useState<User | null>(null);
   let { userId } = useParams<{ userId: string }>();
 
   useEffect(() => {
-    typicodeClient.getUser(parseInt(userId)).then(setUser);
-    typicodeClient.getUserPosts(parseInt(userId)).then(setPosts);
+    typicodeClient.getUser(parseInt(userId), { embed: 'posts' }).then(setUser);
   }, [userId]);
 
   const randomProfilePictures = [
@@ -31,6 +29,10 @@ const Posts = () => {
     'https://tinyfac.es/data/avatars/03F55412-DE8A-4F83-AAA6-D67EE5CE48DA-500w.jpeg',
     'https://tinyfac.es/data/avatars/AEF44435-B547-4B84-A2AE-887DFAEE6DDF-500w.jpeg',
   ];
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <Container style={{ paddingTop: 20 }}>
@@ -71,13 +73,15 @@ const Posts = () => {
           </p>
         </Col>
       </Row>
-      <Row style={{ marginTop: 30 }}>
-        <Col>
-          <h3>My posts: </h3>
-          <hr />
-          <PostsCardView posts={posts} />
-        </Col>
-      </Row>
+      {user.posts && (
+        <Row style={{ marginTop: 30 }}>
+          <Col>
+            <h3>My posts: </h3>
+            <hr />
+            <PostsCardView posts={user.posts} />
+          </Col>
+        </Row>
+      )}
     </Container>
   );
 };

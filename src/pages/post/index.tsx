@@ -20,19 +20,15 @@ interface LoadingPost {
 
 const Posts = () => {
   const [post, setPost] = useState<Post | LoadingPost>({ isLoading: true });
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [user, setUser] = useState<User | null>(null);
   let { id: postId } = useParams<{ id: string }>();
 
   const loadingPost = post as LoadingPost;
   const loadedPost = post as Post;
 
   useEffect(() => {
-    typicodeClient.getPost(parseInt(postId)).then((fetchedPost) => {
-      setPost(fetchedPost);
-      typicodeClient.getUser(fetchedPost.userId).then(setUser);
-    });
-    typicodeClient.getPostComments(parseInt(postId)).then(setComments);
+    typicodeClient
+      .getPost(parseInt(postId), { expand: 'user', embed: 'comments' })
+      .then(setPost);
   }, [postId]);
 
   if (loadingPost.isLoading) {
@@ -69,7 +65,12 @@ const Posts = () => {
       <Row>
         <Col>
           <h5>
-            by: {!!user && <Link to={`/user/${user.id}`}>{user.name}</Link>}
+            by:{' '}
+            {!!loadedPost.user && (
+              <Link to={`/user/${loadedPost.user.id}`}>
+                {loadedPost.user.name}
+              </Link>
+            )}
           </h5>
         </Col>
       </Row>
@@ -81,7 +82,7 @@ const Posts = () => {
       <hr />
       <Table striped>
         <tbody>
-          {comments.map((comment: Comment) => (
+          {loadedPost.comments?.map((comment: Comment) => (
             <tr key={comment.id}>
               <td>
                 <b>{comment.name}</b>

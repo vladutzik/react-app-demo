@@ -1,3 +1,4 @@
+import { Post } from './post';
 export interface User {
   id?: number;
   name?: string;
@@ -9,4 +10,5 @@ export interface User {
     city: string;
   };
   website?: string;
+  posts?: Post[];
 }
