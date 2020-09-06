@@ -1,8 +1,16 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React Demo App
+
+## About
+
+This app was created as a React demo app in the scope of TrueLinked.com test task.
+It was created using `Creat react app` script with typescript template.
+As API source for data I used `jsonplaceholder.typicode.com`
+
+## Demo
+
+https://vladutzik.github.io/react-app-demo/
 
 ## Available Scripts
-
-In the project directory, you can run:
 
 ### `yarn start`
 
