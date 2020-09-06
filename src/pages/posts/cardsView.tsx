@@ -10,7 +10,7 @@ const CardView = ({ post }: { post: Post }) => {
   const [user, setUser] = useState<User | null>(null);
   useEffect(() => {
     if (post.userId) {
-      typicodesClient.getUser(post.userId).then(setUser);
+      typicodesClient.getUser(post.userId).then(({ body }) => setUser(body));
     }
   }, [post.userId]);
   return (

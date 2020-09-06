@@ -1,13 +1,24 @@
-interface QueryOptions {
+export interface QueryOptions {
   embed?: string;
   expand?: string;
+  offset?: string;
+  limit?: string;
 }
 
 const localCache: Record<string, any> = {};
 
+const getResponseHeaders = (res: Response) =>
+  [...Array.from(res.headers.entries())].reduce(
+    (col, [key, value]) => ({ ...col, [key.toLowerCase()]: value }),
+    {}
+  );
+
 const getFromCacheOrFetch = async (url: string) => {
   if (!localCache[url]) {
-    localCache[url] = fetch(url).then((res) => res.json());
+    localCache[url] = fetch(url).then(async (res) => ({
+      headers: getResponseHeaders(res),
+      body: await res.json(),
+    }));
   }
 
   return localCache[url];
@@ -21,14 +32,19 @@ const getSearchParams = (options?: QueryOptions) => {
   if (!options) {
     return '';
   }
+  const mapper: Record<string, string> = {
+    expand: '_expand',
+    embed: '_embed',
+    offset: '_start',
+    limit: '_limit',
+  };
 
-  const searchParams = [];
-  if (options.expand) {
-    searchParams.push(`_expand=${options.expand}`);
-  }
-  if (options.embed) {
-    searchParams.push(`_embed=${options.embed}`);
-  }
+  const searchParams = Object.entries(options).map(([key, value]) => {
+    console.log({ key, value });
+    return mapper[key] ? `${mapper[key]}=${value}` : '';
+  });
+
+  console.log(searchParams);
 
   if (searchParams.length) {
     return `?${searchParams.join('&')}`;

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Container, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import typicodeClient from '../../clients/typicode';
-import { Post } from '../../types/post';
 import { User } from '../../types/user';
 import PostsCardView from '../posts/cardsView';
 
@@ -11,7 +10,9 @@ const Posts = () => {
   let { userId } = useParams<{ userId: string }>();
 
   useEffect(() => {
-    typicodeClient.getUser(parseInt(userId), { embed: 'posts' }).then(setUser);
+    typicodeClient
+      .getUser(parseInt(userId), { embed: 'posts' })
+      .then(({ body }) => setUser(body));
   }, [userId]);
 
   const randomProfilePictures = [

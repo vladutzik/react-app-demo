@@ -12,7 +12,6 @@ import {
 import typicodeClient from '../../clients/typicode';
 import { Post } from '../../types/post';
 import { Comment } from '../../types/comment';
-import { User } from '../../types/user';
 
 interface LoadingPost {
   isLoading: boolean;
@@ -27,8 +26,11 @@ const Posts = () => {
 
   useEffect(() => {
     typicodeClient
-      .getPost(parseInt(postId), { expand: 'user', embed: 'comments' })
-      .then(setPost);
+      .getPost(parseInt(postId), {
+        expand: 'user',
+        embed: 'comments',
+      })
+      .then(({ body }) => setPost(body));
   }, [postId]);
 
   if (loadingPost.isLoading) {

@@ -13,6 +13,14 @@ export default [
     Component: (props: Record<any, any>) => <User {...props} />,
   },
   {
+    path: '/:page/:limit',
+    Component: (props: Record<any, any>) => <Posts {...props} />,
+  },
+  {
+    path: '/:page',
+    Component: (props: Record<any, any>) => <Posts {...props} />,
+  },
+  {
     path: '/',
     Component: (props: Record<any, any>) => <Posts {...props} />,
   },
